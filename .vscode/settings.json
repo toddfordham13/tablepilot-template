@@ -1,0 +1,32 @@
+{
+  /* ===============================
+     Tailwind CSS – silence noise
+     =============================== */
+  "tailwindCSS.lint.invalidApply": "ignore",
+  "tailwindCSS.lint.invalidScreen": "ignore",
+  "tailwindCSS.lint.invalidVariant": "ignore",
+  "tailwindCSS.lint.invalidConfigPath": "ignore",
+  "tailwindCSS.lint.recommendedVariantOrder": "ignore",
+  "tailwindCSS.lint.conflictingClass": "ignore",
+  "tailwindCSS.lint.classDuplicates": "ignore",
+  "tailwindCSS.lint.cssConflict": "ignore",
+  "tailwindCSS.lint.suggestCanonicalClasses": "ignore",
+
+  /* ===============================
+     CSS warnings (Tailwind v4)
+     =============================== */
+  "css.lint.unknownAtRules": "ignore",
+
+  /* ===============================
+     Editor sanity defaults
+     =============================== */
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+
+  /* ===============================
+     Import style (clean paths)
+     =============================== */
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "javascript.preferences.importModuleSpecifier": "non-relative"
+}
