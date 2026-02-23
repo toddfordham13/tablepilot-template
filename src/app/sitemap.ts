@@ -1,14 +1,20 @@
 import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
-    "https://graze-lounge.com";
+  const baseUrl = "https://graze-lounge.com";
 
-  const routes = ["/", "/menu", "/gallery"];
-
-  return routes.map((path) => ({
-    url: `${baseUrl}${path}`,
-    lastModified: new Date(),
-  }));
+  return [
+    {
+      url: `${baseUrl}/`,
+      lastModified: new Date(),
+    },
+    {
+      url: `${baseUrl}/menu`,
+      lastModified: new Date(),
+    },
+    {
+      url: `${baseUrl}/gallery`,
+      lastModified: new Date(),
+    },
+  ];
 }
