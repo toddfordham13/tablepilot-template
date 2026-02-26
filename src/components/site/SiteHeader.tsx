@@ -1,17 +1,26 @@
+"use client";
+
 import Link from "next/link";
-
-const leftLinks = [
-  { label: "MENU", href: "/menu" },
-  { label: "GALLERY", href: "/gallery" },
-  { label: "ORDER", href: "/#order" }, // keep as anchor for now
-];
-
-const rightLinks = [
-  { label: "FIND US", href: "/#find" },
-  { label: "CONTACT", href: "/#contact" },
-];
+import { usePathname } from "next/navigation";
 
 export default function SiteHeader() {
+  const pathname = usePathname();
+
+  // If we're already on the homepage, use hash-only anchors for reliable scrolling.
+  // If we're on another page, route back to home + hash.
+  const findHref = pathname === "/" ? "#find" : "/#find";
+  const contactHref = pathname === "/" ? "#contact" : "/#contact";
+
+  const leftLinks = [
+    { label: "MENU", href: "/menu" },
+    { label: "GALLERY", href: "/gallery" },
+  ];
+
+  const rightLinks = [
+    { label: "FIND US", href: findHref },
+    { label: "CONTACT", href: contactHref },
+  ];
+
   return (
     <header className="w-full">
       <div className="container-shell pt-6">
@@ -25,7 +34,6 @@ export default function SiteHeader() {
                 className="group relative text-xs tracking-[0.22em] text-charcoal/70 hover:text-charcoal transition"
               >
                 {item.label}
-                {/* underline only on hover */}
                 <span className="absolute -bottom-1 left-0 h-[2px] w-full origin-left scale-x-0 rounded bg-[var(--gold)] transition-transform duration-200 group-hover:scale-x-100" />
               </Link>
             ))}
@@ -51,15 +59,14 @@ export default function SiteHeader() {
                   className="group relative text-xs tracking-[0.22em] text-charcoal/70 hover:text-charcoal transition"
                 >
                   {item.label}
-                  {/* underline only on hover */}
                   <span className="absolute -bottom-1 left-0 h-[2px] w-full origin-left scale-x-0 rounded bg-[var(--gold)] transition-transform duration-200 group-hover:scale-x-100" />
                 </Link>
               ))}
             </div>
 
             {/* PRIMARY CTA */}
-            <Link href="/#order" className="pill pill-primary">
-              ORDER ONLINE
+            <Link href={findHref} className="pill pill-primary">
+              GET DIRECTIONS
             </Link>
           </div>
         </nav>

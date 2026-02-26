@@ -2,7 +2,7 @@ export default function Discover() {
   const items = [
     {
       title: "Gallery",
-      desc: "A first look at the vibe — cocktails, warm light and late-night energy.",
+      desc: "A first look at the vibe — warm light, cocktails and late-night energy.",
       href: "/gallery",
       cta: "View Gallery",
       img: "/images/hero/hero-3.jpg",
@@ -10,7 +10,7 @@ export default function Discover() {
     },
     {
       title: "Menu",
-      desc: "Crowd favourites, made properly — cocktails, spritz, classics and more.",
+      desc: "Crowd favourites, made properly — classics, spritz, signatures and more.",
       href: "/menu",
       cta: "View Menu",
       img: "/images/cocktails/espresso-martini.jpg",
@@ -19,12 +19,13 @@ export default function Discover() {
     {
       title: "Find Us",
       desc: "Central Ayia Napa — easy to reach, hard to leave.",
-      href: "/#find",
+      // Use in-page anchor to avoid a full navigation refresh on the homepage
+      href: "#find",
       cta: "Get Directions",
       img: "/images/hero/hero-2.jpg",
       alt: "Graze Lounge location preview",
     },
-  ];
+  ] as const;
 
   return (
     <section className="px-6 pb-14">
@@ -37,7 +38,7 @@ export default function Discover() {
             Everything you need — in one place.
           </h2>
           <p className="mt-3 mx-auto max-w-2xl text-[#1f1f1f]/70 leading-relaxed">
-            Explore the vibe, browse the cocktails, and find us in the heart of Ayia Napa.
+            See the vibe, browse the cocktails, then get directions and drop in tonight.
           </p>
         </div>
 
@@ -47,6 +48,7 @@ export default function Discover() {
               key={it.title}
               href={it.href}
               className="group overflow-hidden rounded-2xl bg-white/70 ring-1 ring-[#d9d9d9]/70 shadow-[0_12px_40px_rgba(0,0,0,0.08)] hover:shadow-[0_18px_55px_rgba(0,0,0,0.12)] transition"
+              aria-label={`${it.cta}: ${it.title}`}
             >
               <div className="relative aspect-[4/3] overflow-hidden">
                 <img

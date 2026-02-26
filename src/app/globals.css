@@ -11,8 +11,14 @@
 }
 
 /* =========================================================
-   Base
+   Base / Reset
 ========================================================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html,
 body {
   height: 100%;
@@ -20,18 +26,34 @@ body {
 
 html {
   scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
 }
 
 body {
+  margin: 0;
   color: var(--charcoal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
   background:
     radial-gradient(1200px 800px at 20% 10%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 60%),
     radial-gradient(900px 700px at 85% 20%, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 62%),
     linear-gradient(180deg, #f6f5f2, #f1eeea);
 }
 
-/* Offset for anchor scroll */
-section {
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* =========================================================
+   Anchor scroll offset
+   (works for any element with an id, not just <section>)
+========================================================= */
+[id] {
   scroll-margin-top: 96px;
 }
 
@@ -176,7 +198,7 @@ section {
 }
 
 /* =========================================================
-   Links
+   Links & Focus
 ========================================================= */
 a {
   transition: color 160ms ease;
@@ -186,7 +208,7 @@ a:focus-visible,
 button:focus-visible {
   outline: none;
   box-shadow: 0 0 0 3px rgba(111, 138, 116, 0.3);
-  border-radius: 6px;
+  border-radius: 10px;
 }
 
 /* =========================================================
@@ -227,4 +249,23 @@ button:focus-visible {
 
 .navlink:hover::after {
   transform: scaleX(1);
+}
+
+/* =========================================================
+   Reduced motion support (very “pro”)
+========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal {
+    transition: none;
+    transform: none;
+    opacity: 1;
+  }
+
+  .pill {
+    transition: none;
+  }
 }

@@ -1,4 +1,4 @@
-// src/app/menu/page.tsx
+import Link from "next/link";
 
 type MenuItem = { name: string; price: string; desc?: string };
 type MenuSectionData = { id: string; title: string; items: MenuItem[] };
@@ -99,15 +99,18 @@ export default function MenuPage() {
     <main className="min-h-screen px-6 py-12">
       <div className="mx-auto max-w-[1120px]">
         <div className="rounded-3xl bg-white/60 px-6 py-14 sm:px-10 sm:py-16 ring-1 ring-[#d9d9d9] shadow-[0_20px_60px_rgba(0,0,0,0.06)]">
-
-          {/* BACK LINK */}
-          <div className="mb-8">
-            <a
+          {/* BACK + QUICK CTA */}
+          <div className="mb-8 flex items-center justify-between gap-4">
+            <Link
               href="/"
               className="inline-flex items-center gap-2 text-sm font-medium text-[#1f1f1f]/70 hover:text-[#1f1f1f] transition"
             >
               ← Back to Home
-            </a>
+            </Link>
+
+            <Link href="/gallery" className="pill" aria-label="View gallery">
+              View Gallery
+            </Link>
           </div>
 
           {/* HEADER */}
@@ -123,9 +126,22 @@ export default function MenuPage() {
             </p>
           </div>
 
+          {/* STICKY SECTION NAV */}
+          <div className="mt-10 sticky top-[96px] z-20">
+            <div className="rounded-2xl bg-white/70 backdrop-blur ring-1 ring-[#d9d9d9] shadow-[0_12px_40px_rgba(0,0,0,0.06)] px-4 py-3">
+              <div className="flex gap-2 overflow-x-auto whitespace-nowrap">
+                {sections.map((s) => (
+                  <a key={s.id} href={`#${s.id}`} className="pill px-4 py-2">
+                    {s.title}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+
           {/* SECTIONS */}
           {sections.map((section) => (
-            <section key={section.id} className="mt-16">
+            <section key={section.id} id={section.id} className="mt-16">
               <h2 className="text-2xl font-semibold text-[#1f1f1f] tracking-tight">
                 {section.title}
               </h2>
@@ -155,6 +171,21 @@ export default function MenuPage() {
             </section>
           ))}
 
+          {/* FOOT CTA */}
+          <div className="mt-16 text-center">
+            <div className="h-px w-full bg-gradient-to-r from-transparent via-[#d9d9d9] to-transparent" />
+            <div className="mt-10 flex flex-wrap justify-center gap-3">
+              <Link href="#cocktails" className="pill" aria-label="Back to top of menu">
+                Back to Top
+              </Link>
+              <Link href="/gallery" className="pill pill-primary" aria-label="View gallery">
+                View Gallery
+              </Link>
+              <Link href="/#find" className="pill" aria-label="Get directions">
+                Get Directions
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </main>

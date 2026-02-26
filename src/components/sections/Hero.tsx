@@ -23,6 +23,7 @@ export default function Hero() {
   const intervalRef = useRef<number | null>(null);
   const fadeTimeoutRef = useRef<number | null>(null);
 
+  // preload
   useEffect(() => {
     let cancelled = false;
 
@@ -57,7 +58,6 @@ export default function Hero() {
     if (available.length <= 1) return;
 
     const next = (frontIndex + 1) % available.length;
-
     setBackIndex(next);
     setIsFading(true);
 
@@ -92,9 +92,11 @@ export default function Hero() {
   const backSrc = available[backIndex]?.src ?? frontSrc;
 
   return (
-    <section className="container-shell pt-8 sm:pt-10">
-      <div className="rounded-3xl border border-black/15 bg-white/25 p-3 sm:p-4">
-        <div className="relative overflow-hidden rounded-[26px] border border-black/15">
+    <section className="container-shell pt-5 sm:pt-6">
+      {/* OUTER SOFT FRAME (matches header vibe) */}
+      <div className="rounded-3xl border border-black/10 bg-white/45 p-3 sm:p-4 shadow-[0_18px_55px_rgba(0,0,0,0.08)] backdrop-blur">
+        {/* INNER IMAGE FRAME */}
+        <div className="relative overflow-hidden rounded-[26px] border border-black/12">
           <div className="absolute inset-0">
             <div
               className="absolute inset-0 bg-cover bg-center"
@@ -107,14 +109,14 @@ export default function Hero() {
                 opacity: isFading ? 1 : 0,
               }}
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/15 to-transparent" />
-            <div className="absolute inset-0 shadow-[inset_0_0_120px_rgba(0,0,0,0.18)]" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/22 to-transparent" />
+            <div className="absolute inset-0 shadow-[inset_0_0_140px_rgba(0,0,0,0.20)]" />
           </div>
 
-          <div className="relative h-[440px] sm:h-[520px] px-6 sm:px-10 py-10 sm:py-12 md:px-14">
-            <div className="max-w-[560px]">
+          <div className="relative h-[460px] sm:h-[540px] px-6 sm:px-10 py-12 sm:py-14 md:px-14">
+            <div className="max-w-[640px]">
               <h1 className="h-font text-[44px] sm:text-[58px] md:text-[62px] leading-[1.05] tracking-[0.01em] text-white">
-                Cocktails
+                Cocktails & music
                 <br />
                 in the heart of
                 <br />
@@ -122,31 +124,60 @@ export default function Hero() {
               </h1>
 
               <p className="mt-6 sm:mt-8 b-font text-xs sm:text-sm tracking-[0.22em] text-white/85">
-                Relaxed evenings · Great music
-                <br />
-                Good company
+                Warm light · Great drinks · Good people
               </p>
 
               <div className="mt-8 sm:mt-10 flex flex-wrap gap-3">
                 <Link
-                  href="/#find"
+                  href="#find"
                   className="pill"
                   style={{
                     background: "rgba(255,255,255,0.38)",
                     borderColor: "rgba(255,255,255,0.35)",
+                    color: "white",
                   }}
                 >
-                  FIND US
+                  GET DIRECTIONS
                 </Link>
 
-                <Link href="/#order" className="pill pill-primary">
-                  ORDER ONLINE
+                <Link href="/menu" className="pill pill-primary">
+                  VIEW MENU
                 </Link>
               </div>
+
+              {/* dots */}
+              {available.length > 1 && (
+                <div className="mt-8 flex items-center gap-2">
+                  {available.map((_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => {
+                        setBackIndex(i);
+                        setIsFading(true);
+                        if (fadeTimeoutRef.current)
+                          window.clearTimeout(fadeTimeoutRef.current);
+                        fadeTimeoutRef.current = window.setTimeout(() => {
+                          setFrontIndex(i);
+                          setIsFading(false);
+                        }, 900);
+                      }}
+                      className={`h-2.5 rounded-full transition-all ${i === frontIndex
+                          ? "w-8 bg-white/85"
+                          : "w-2.5 bg-white/45 hover:bg-white/60"
+                        }`}
+                      aria-label={`Show slide ${i + 1}`}
+                    />
+                  ))}
+                  <span className="ml-3 text-xs tracking-[0.22em] text-white/60">
+                    AUTO
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white/30 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white/22 to-transparent" />
         </div>
       </div>
     </section>

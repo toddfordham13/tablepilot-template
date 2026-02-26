@@ -1,5 +1,3 @@
-// src/components/sections/SignatureCocktails.tsx
-
 export default function SignatureCocktails() {
   const cocktails = [
     {
@@ -7,24 +5,28 @@ export default function SignatureCocktails() {
       img: "/images/cocktails/pornstar-martini.jpg",
       desc: "Vanilla vodka, passionfruit purée and vanilla syrup — served with a chilled champagne sidecar.",
       alt: "Pornstar Martini with champagne sidecar",
+      pos: "50% 78%",
     },
     {
       name: "Espresso Martini",
       img: "/images/cocktails/espresso-martini.jpg",
       desc: "Vodka, Kahlua and fresh espresso — rich, smooth and built for long nights.",
       alt: "Espresso Martini",
+      pos: "50% 76%",
     },
     {
       name: "Old Fashioned",
       img: "/images/cocktails/old-fashioned.jpg",
       desc: "Bourbon, sugar and angostura bitters — stirred down and finished with a subtle splash of soda.",
       alt: "Old Fashioned cocktail",
+      pos: "50% 86%",
     },
     {
       name: "Amaretto Sour",
       img: "/images/cocktails/amaretto-sour.jpg",
       desc: "Amaretto, fresh lemon and sugar syrup — brightened with a touch of soda for a smooth citrus lift.",
       alt: "Amaretto Sour in rocks glass",
+      pos: "50% 82%",
     },
   ];
 
@@ -56,6 +58,7 @@ export default function SignatureCocktails() {
                   src={c.img}
                   alt={c.alt}
                   className="h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-105"
+                  style={{ objectPosition: c.pos }}
                   loading="lazy"
                 />
 

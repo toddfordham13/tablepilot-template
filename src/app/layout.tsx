@@ -15,18 +15,43 @@ const inter = Inter({
   display: "swap",
 });
 
+const SITE_NAME = "Graze Lounge";
+const SITE_URL = "https://graze-lounge.com"; // change to real domain later
+
 export const metadata: Metadata = {
-  title: "Graze Lounge | Cocktails in Ayia Napa",
+  metadataBase: new URL(SITE_URL),
+  applicationName: SITE_NAME,
+  title: {
+    default: "Graze Lounge | Cocktails in Ayia Napa",
+    template: "%s | Graze Lounge",
+  },
   description:
     "Graze Lounge is a relaxed cocktail bar in central Ayia Napa — crafted cocktails, great music, and laid-back evenings.",
-  metadataBase: new URL("https://graze-lounge.com"), // change to real domain later
+  keywords: [
+    "Graze Lounge",
+    "Ayia Napa cocktails",
+    "cocktail bar Ayia Napa",
+    "Cyprus cocktail bar",
+    "Ayia Napa nightlife",
+    "cocktails and music",
+  ],
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "Graze Lounge | Cocktails in Ayia Napa",
     description:
       "Crafted cocktails, great music, and laid-back evenings in the heart of Ayia Napa.",
-    url: "https://graze-lounge.com",
-    siteName: "Graze Lounge",
-    images: [{ url: "/og.jpg", width: 1200, height: 630, alt: "Graze Lounge" }],
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    images: [
+      {
+        url: "/og.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Graze Lounge",
+      },
+    ],
     locale: "en_GB",
     type: "website",
   },
@@ -37,8 +62,24 @@ export const metadata: Metadata = {
       "Crafted cocktails, great music, and laid-back evenings in the heart of Ayia Napa.",
     images: ["/og.jpg"],
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
   },
 };
 
@@ -52,10 +93,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      className={`${playfair.variable} ${inter.variable}`}
-    >
+    <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
       <body className="min-h-screen">{children}</body>
     </html>
   );
