@@ -24,6 +24,46 @@ function isEmail(v: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 }
 
+/**
+ * Fire a GA4 event safely.
+ * - Works whether you use gtag directly or later switch to GTM.
+ * - Never sends PII (no email/name/message).
+ */
+function trackPrivateHireSubmitSuccess(form: FormState) {
+  const groupSizeNum = form.groupSize.trim() ? Number(form.groupSize.trim()) : undefined;
+  const hasPhone = Boolean(form.phone.trim());
+  const hasPreferredDate = Boolean(form.date.trim());
+
+  // GA4 gtag (standard)
+  try {
+    const w = window as any;
+    if (typeof w.gtag === "function") {
+      w.gtag("event", "private_hire_submit", {
+        // Useful context
+        group_size: Number.isFinite(groupSizeNum) ? groupSizeNum : undefined,
+        preferred_date_provided: hasPreferredDate ? 1 : 0,
+        phone_provided: hasPhone ? 1 : 0,
+      });
+    }
+  } catch {
+    // ignore
+  }
+
+  // GTM-style dataLayer (optional future use)
+  try {
+    const w = window as any;
+    w.dataLayer = w.dataLayer || [];
+    w.dataLayer.push({
+      event: "private_hire_submit",
+      group_size: Number.isFinite(groupSizeNum) ? groupSizeNum : undefined,
+      preferred_date_provided: hasPreferredDate ? 1 : 0,
+      phone_provided: hasPhone ? 1 : 0,
+    });
+  } catch {
+    // ignore
+  }
+}
+
 export default function PrivateHire() {
   const [form, setForm] = useState<FormState>(INITIAL);
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
@@ -65,6 +105,9 @@ export default function PrivateHire() {
         throw new Error(data?.error || "Submission failed.");
       }
 
+      // ✅ Track only on real success (no PII)
+      trackPrivateHireSubmitSuccess(form);
+
       setStatus("success");
       setForm(INITIAL);
     } catch (err: any) {
@@ -83,8 +126,8 @@ export default function PrivateHire() {
             <div className="mt-3 h-px w-full bg-black/10" />
 
             <div className="b-font mt-6 text-[15px] text-charcoal/70 leading-relaxed">
-              Planning a birthday, group night out, or a private party in Ayia Napa?
-              Send us the details and we’ll get back to you with availability and options.
+              Planning a birthday, group night out, or a private party in Ayia Napa? Send us the details and
+              we’ll get back to you with availability and options.
             </div>
 
             <div className="mt-6 space-y-2">
@@ -145,9 +188,7 @@ export default function PrivateHire() {
               />
 
               <div>
-                <label className="b-font text-[11px] tracking-[0.26em] text-charcoal/55">
-                  Message
-                </label>
+                <label className="b-font text-[11px] tracking-[0.26em] text-charcoal/55">Message</label>
                 <div className="mt-2 overflow-hidden rounded-[14px] bg-white/30 ring-1 ring-black/10">
                   <textarea
                     value={form.message}
@@ -201,9 +242,7 @@ function Field(props: {
 }) {
   return (
     <div>
-      <label className="b-font text-[11px] tracking-[0.26em] text-charcoal/55">
-        {props.label}
-      </label>
+      <label className="b-font text-[11px] tracking-[0.26em] text-charcoal/55">{props.label}</label>
       <div className="mt-2 overflow-hidden rounded-[14px] bg-white/30 ring-1 ring-black/10">
         <input
           value={props.value}
