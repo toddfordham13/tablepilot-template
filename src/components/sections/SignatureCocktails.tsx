@@ -1,84 +1,131 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import Link from "next/link";
+import Image from "next/image";
+
+const cocktails = [
+  {
+    name: "Espresso Martini",
+    desc: "Vodka, coffee liqueur, fresh espresso — smooth, bold and late-night ready.",
+    img: "/images/cocktails/espresso-martini.jpg",
+  },
+  {
+    name: "Old Fashioned",
+    desc: "Bourbon, sugar, bitters — simple, strong and timeless.",
+    img: "/images/cocktails/old-fashioned.jpg",
+  },
+  {
+    name: "Pornstar Martini",
+    desc: "Vanilla vodka, passionfruit, prosecco on the side — a crowd favourite.",
+    img: "/images/cocktails/pornstar-martini.jpg",
+  },
+  {
+    name: "Amaretto Sour",
+    desc: "Amaretto, citrus, silky foam — sweet with a sharp edge.",
+    img: "/images/cocktails/amaretto-sour.jpg",
+  },
+];
+
 export default function SignatureCocktails() {
-  const cocktails = [
-    {
-      name: "Pornstar Martini",
-      img: "/images/cocktails/pornstar-martini.jpg",
-      desc: "Vanilla vodka, passionfruit purée and vanilla syrup — served with a chilled champagne sidecar.",
-      alt: "Pornstar Martini with champagne sidecar",
-      pos: "50% 78%",
-    },
-    {
-      name: "Espresso Martini",
-      img: "/images/cocktails/espresso-martini.jpg",
-      desc: "Vodka, Kahlua and fresh espresso — rich, smooth and built for long nights.",
-      alt: "Espresso Martini",
-      pos: "50% 76%",
-    },
-    {
-      name: "Old Fashioned",
-      img: "/images/cocktails/old-fashioned.jpg",
-      desc: "Bourbon, sugar and angostura bitters — stirred down and finished with a subtle splash of soda.",
-      alt: "Old Fashioned cocktail",
-      pos: "50% 86%",
-    },
-    {
-      name: "Amaretto Sour",
-      img: "/images/cocktails/amaretto-sour.jpg",
-      desc: "Amaretto, fresh lemon and sugar syrup — brightened with a touch of soda for a smooth citrus lift.",
-      alt: "Amaretto Sour in rocks glass",
-      pos: "50% 82%",
-    },
-  ];
+  const cardsRef = useRef<Array<HTMLElement | null>>([]);
+
+  useEffect(() => {
+    const els = cardsRef.current.filter(Boolean) as HTMLElement[];
+    if (!els.length) return;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("opacity-100", "translate-y-0");
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
 
   return (
-    <section className="px-4 sm:px-6 pt-4 pb-12 sm:pb-14">
-      <div className="rounded-3xl bg-[#f5f4f1] px-5 sm:px-10 py-10 sm:py-14 ring-1 ring-[#d9d9d9] shadow-[0_18px_55px_rgba(0,0,0,0.08)]">
-        <div className="max-w-5xl">
-          <p className="text-[10px] sm:text-xs tracking-[0.3em] uppercase text-[#1f1f1f]/60">
-            Signature Cocktails
+    <section className="px-6 py-20">
+      <div className="mx-auto max-w-[1120px]">
+        <div className="text-center">
+          <p className="text-xs tracking-[0.35em] uppercase text-[#1f1f1f]/60">
+            Signature Drinks
           </p>
 
-          <h2 className="mt-3 text-2xl sm:text-4xl font-semibold tracking-tight text-[#1f1f1f]">
-            Crafted classics. Elevated presentation.
+          <h2 className="mt-3 text-3xl sm:text-4xl font-semibold tracking-tight text-[#1f1f1f]">
+            Crafted properly. Poured with intent.
           </h2>
 
-          <p className="mt-3 sm:mt-4 text-sm sm:text-base text-[#1f1f1f]/70 max-w-2xl leading-relaxed">
-            Four crowd favourites, made properly — designed for sunset starts and late-night finishes.
+          <p className="mt-3 mx-auto max-w-2xl text-[#1f1f1f]/70 leading-relaxed">
+            From bold espresso martinis to timeless classics — our menu balances
+            crowd favourites with cocktails done right.
           </p>
         </div>
 
-        <div className="mt-8 sm:mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {cocktails.map((c) => (
+        <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {cocktails.map((drink, i) => (
             <article
-              key={c.name}
-              className="group overflow-hidden rounded-2xl ring-1 ring-[#d9d9d9]/50 shadow-[0_8px_30px_rgba(0,0,0,0.06)] hover:shadow-[0_22px_65px_rgba(0,0,0,0.14)] hover:-translate-y-1 transition-all duration-300"
+              key={drink.name}
+              ref={(el) => {
+                cardsRef.current[i] = el;
+              }}
+              className="group relative overflow-hidden rounded-2xl bg-white ring-1 ring-black/5 shadow-[0_12px_40px_rgba(0,0,0,0.08)]
+                         transition-all duration-700 ease-[cubic-bezier(.22,1,.36,1)]
+                         opacity-0 translate-y-8"
             >
-              <div className="relative aspect-[4/3] overflow-hidden">
-                <img
-                  src={c.img}
-                  alt={c.alt}
-                  className="h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-105"
-                  style={{ objectPosition: c.pos }}
-                  loading="lazy"
+              {/* Image */}
+              <div className="relative aspect-[4/5] overflow-hidden">
+                <Image
+                  src={drink.img}
+                  alt={drink.name}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  className="object-cover object-center transition duration-700 group-hover:scale-[1.05]"
+                  priority={i === 0}
                 />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                {/* Film grain overlay */}
+                <div
+                  className="pointer-events-none absolute inset-0 opacity-[0.08] mix-blend-overlay"
+                  style={{
+                    backgroundImage:
+                      "url('data:image/svg+xml,%3Csvg viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cfilter id=\"noiseFilter\"%3E%3CfeTurbulence type=\"fractalNoise\" baseFrequency=\"0.8\" numOctaves=\"2\" stitchTiles=\"stitch\"/%3E%3C/filter%3E%3Crect width=\"100%25\" height=\"100%25\" filter=\"url(%23noiseFilter)\"/%3E%3C/svg%3E')",
+                  }}
+                />
+              </div>
 
-                <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
-                  <h3 className="text-lg sm:text-xl font-semibold text-white">
-                    {c.name}
-                  </h3>
+              {/* Copy */}
+              <div className="p-5">
+                <h3 className="text-lg font-semibold text-[#1f1f1f]">
+                  {drink.name}
+                </h3>
+                <p className="mt-2 text-sm text-[#1f1f1f]/70 leading-relaxed">
+                  {drink.desc}
+                </p>
 
-                  <p className="mt-2 text-xs sm:text-sm text-white/85 leading-relaxed">
-                    {c.desc}
-                  </p>
-                </div>
+                {/* subtle accent line */}
+                <div className="mt-4 h-px w-10 bg-[#d8c08a]/60 transition-all duration-500 group-hover:w-16" />
               </div>
             </article>
           ))}
         </div>
 
-        <div className="mt-8 sm:mt-10 h-px w-full bg-gradient-to-r from-transparent via-[#d9d9d9] to-transparent" />
+        <div className="mt-16 text-center">
+          <Link
+            href="/menu"
+            className="inline-flex items-center justify-center rounded-full px-8 py-3 text-xs sm:text-sm font-semibold tracking-[0.12em] uppercase
+                       text-white bg-[#6d7f6c] hover:bg-[#5f705e]
+                       shadow-[0_10px_35px_rgba(0,0,0,0.10)] transition"
+          >
+            View Full Menu
+          </Link>
+        </div>
       </div>
     </section>
   );

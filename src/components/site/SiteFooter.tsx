@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const ADDRESS_LINE = "5 Ippokratous St, 5330 Ayia Napa, Cyprus";
 const OPENING_HOURS = "Mon–Sun  |  4:00 PM — Late";
@@ -14,6 +17,11 @@ function telLink(phone: string) {
 
 export default function SiteFooter() {
   const year = new Date().getFullYear();
+  const pathname = usePathname();
+
+  const findHref = pathname === "/" ? "#find" : "/#find";
+  const contactHref = pathname === "/" ? "#contact" : "/#contact";
+  const privateHireHref = pathname === "/" ? "#private-hire" : "/#private-hire";
 
   return (
     <footer className="w-full">
@@ -67,16 +75,22 @@ export default function SiteFooter() {
                 Gallery
               </Link>
               <Link
-                href="#find"
+                href={findHref}
                 className="text-sm text-charcoal/70 hover:text-charcoal transition"
               >
                 Find Us
               </Link>
               <Link
-                href="#contact"
+                href={contactHref}
                 className="text-sm text-charcoal/70 hover:text-charcoal transition"
               >
                 Contact
+              </Link>
+              <Link
+                href={privateHireHref}
+                className="text-sm text-charcoal/70 hover:text-charcoal transition"
+              >
+                Private Hire
               </Link>
             </div>
           </div>

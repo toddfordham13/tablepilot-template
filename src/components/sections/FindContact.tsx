@@ -5,18 +5,50 @@ const PHONE = "+357 943 24677";
 const INSTAGRAM_URL = "https://www.instagram.com/graze_lounge/";
 const FACEBOOK_URL = "https://www.facebook.com/profile.php?id=61588374581854";
 
-function mapEmbedUrl(address: string) {
-  const q = encodeURIComponent(address);
+/**
+ * To stop maps pointing to a random house, prefer ONE of:
+ * 1) GOOGLE_MAPS_PLACE_ID (best)
+ * 2) MAPS_COORDS (e.g. "34.989123,33.999456")
+ *
+ * If neither is set, we fall back to ADDRESS_LINE.
+ *
+ * Set these in .env.local / Vercel:
+ * - NEXT_PUBLIC_GOOGLE_MAPS_PLACE_ID=
+ * - NEXT_PUBLIC_MAPS_COORDS=
+ */
+const PLACE_ID = process.env.NEXT_PUBLIC_GOOGLE_MAPS_PLACE_ID || "";
+const COORDS = process.env.NEXT_PUBLIC_MAPS_COORDS || "";
+
+function mapQuery() {
+  if (PLACE_ID) return `place_id:${PLACE_ID}`;
+  if (COORDS) return COORDS;
+  return ADDRESS_LINE;
+}
+
+function mapEmbedUrl() {
+  // Using q works for place_id:... and for lat,lng and for normal addresses
+  const q = encodeURIComponent(mapQuery());
   return `https://www.google.com/maps?q=${q}&output=embed`;
 }
 
-function mapsDirectionsUrl(address: string) {
-  const q = encodeURIComponent(address);
+function mapsDirectionsUrl() {
+  // Google Directions supports destination=lat,lng OR destination=address OR destination_place_id=
+  if (PLACE_ID) {
+    return `https://www.google.com/maps/dir/?api=1&destination_place_id=${encodeURIComponent(
+      PLACE_ID
+    )}`;
+  }
+  const q = encodeURIComponent(mapQuery());
   return `https://www.google.com/maps/dir/?api=1&destination=${q}`;
 }
 
+function appleMapsDirectionsUrl() {
+  // Apple Maps: daddr can be address or lat,lng
+  const daddr = encodeURIComponent(mapQuery());
+  return `https://maps.apple.com/?daddr=${daddr}`;
+}
+
 function telLink(phone: string) {
-  // Keep +, remove spaces and common separators
   const cleaned = phone.replace(/[^\d+]/g, "");
   return `tel:${cleaned}`;
 }
@@ -35,7 +67,7 @@ export default function FindContact() {
             <div className="mt-6 overflow-hidden rounded-[14px] bg-white/30 ring-1 ring-black/10">
               <iframe
                 title="Graze Lounge map"
-                src={mapEmbedUrl(ADDRESS_LINE)}
+                src={mapEmbedUrl()}
                 className="h-[220px] sm:h-[260px] w-full"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
@@ -47,15 +79,26 @@ export default function FindContact() {
               {ADDRESS_LINE}
             </div>
 
-            <div className="mt-5">
+            <div className="mt-5 flex flex-wrap gap-3">
               <a
-                href={mapsDirectionsUrl(ADDRESS_LINE)}
+                href={mapsDirectionsUrl()}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="pill inline-flex items-center gap-2 hover:text-[var(--gold)] transition"
                 aria-label="Open directions to Graze Lounge in Google Maps"
               >
-                <span>Get Directions</span>
+                <span>Google Maps</span>
+                <span aria-hidden="true">→</span>
+              </a>
+
+              <a
+                href={appleMapsDirectionsUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="pill inline-flex items-center gap-2 hover:text-[var(--gold)] transition"
+                aria-label="Open directions to Graze Lounge in Apple Maps"
+              >
+                <span>Apple Maps</span>
                 <span aria-hidden="true">→</span>
               </a>
             </div>

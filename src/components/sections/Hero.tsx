@@ -23,7 +23,7 @@ export default function Hero() {
   const intervalRef = useRef<number | null>(null);
   const fadeTimeoutRef = useRef<number | null>(null);
 
-  // preload
+  /* ------------------ Preload images ------------------ */
   useEffect(() => {
     let cancelled = false;
 
@@ -45,7 +45,7 @@ export default function Hero() {
 
       setAvailable(finalList);
       setFrontIndex(0);
-      setBackIndex(0);
+      setBackIndex(finalList.length > 1 ? 1 : 0);
       setIsFading(false);
     });
 
@@ -54,6 +54,7 @@ export default function Hero() {
     };
   }, [slides]);
 
+  /* ------------------ Auto slide ------------------ */
   const goNext = () => {
     if (available.length <= 1) return;
 
@@ -65,7 +66,7 @@ export default function Hero() {
     fadeTimeoutRef.current = window.setTimeout(() => {
       setFrontIndex(next);
       setIsFading(false);
-    }, 900);
+    }, 800);
   };
 
   useEffect(() => {
@@ -78,7 +79,6 @@ export default function Hero() {
       if (intervalRef.current) window.clearInterval(intervalRef.current);
       intervalRef.current = null;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [available.length, frontIndex]);
 
   useEffect(() => {
@@ -92,30 +92,30 @@ export default function Hero() {
   const backSrc = available[backIndex]?.src ?? frontSrc;
 
   return (
-    <section className="container-shell pt-5 sm:pt-6">
-      {/* OUTER SOFT FRAME (matches header vibe) */}
-      <div className="rounded-3xl border border-black/10 bg-white/45 p-3 sm:p-4 shadow-[0_18px_55px_rgba(0,0,0,0.08)] backdrop-blur">
-        {/* INNER IMAGE FRAME */}
-        <div className="relative overflow-hidden rounded-[26px] border border-black/12">
+    <section className="container-shell">
+      <div className="rounded-3xl border border-black/10 bg-white/40 p-4 shadow-[0_15px_45px_rgba(0,0,0,0.08)]">
+        <div className="relative overflow-hidden rounded-[26px] border border-black/10">
+
+          {/* Background layers */}
           <div className="absolute inset-0">
             <div
               className="absolute inset-0 bg-cover bg-center"
               style={{ backgroundImage: `url(${frontSrc})` }}
             />
             <div
-              className="absolute inset-0 bg-cover bg-center transition-opacity duration-900"
+              className="absolute inset-0 bg-cover bg-center transition-opacity duration-700"
               style={{
                 backgroundImage: `url(${backSrc})`,
                 opacity: isFading ? 1 : 0,
               }}
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/22 to-transparent" />
-            <div className="absolute inset-0 shadow-[inset_0_0_140px_rgba(0,0,0,0.20)]" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/25 to-transparent" />
           </div>
 
-          <div className="relative h-[460px] sm:h-[540px] px-6 sm:px-10 py-12 sm:py-14 md:px-14">
+          {/* Content */}
+          <div className="relative flex items-center px-12 min-h-[520px]">
             <div className="max-w-[640px]">
-              <h1 className="h-font text-[44px] sm:text-[58px] md:text-[62px] leading-[1.05] tracking-[0.01em] text-white">
+              <h1 className="h-font text-[62px] leading-[1.05] text-white">
                 Cocktails & music
                 <br />
                 in the heart of
@@ -123,35 +123,32 @@ export default function Hero() {
                 Ayia Napa
               </h1>
 
-              <p className="mt-6 sm:mt-8 b-font text-xs sm:text-sm tracking-[0.22em] text-white/85">
+              <p className="mt-6 text-sm tracking-[0.22em] text-white/85">
                 Warm light · Great drinks · Good people
               </p>
 
-              <div className="mt-8 sm:mt-10 flex flex-wrap gap-3">
+              <div className="mt-8 flex gap-3">
                 <Link
                   href="#find"
-                  className="pill"
-                  style={{
-                    background: "rgba(255,255,255,0.38)",
-                    borderColor: "rgba(255,255,255,0.35)",
-                    color: "white",
-                  }}
+                  className="rounded-full border border-white/40 bg-white/25 px-6 py-2 text-xs tracking-[0.18em] text-white hover:bg-white/35 transition"
                 >
                   GET DIRECTIONS
                 </Link>
 
-                <Link href="/menu" className="pill pill-primary">
+                <Link
+                  href="/menu"
+                  className="rounded-full bg-[var(--botanical)] px-6 py-2 text-xs tracking-[0.18em] text-white hover:opacity-95 transition"
+                >
                   VIEW MENU
                 </Link>
               </div>
 
-              {/* dots */}
+              {/* Slide dots */}
               {available.length > 1 && (
-                <div className="mt-8 flex items-center gap-2">
+                <div className="mt-10 flex gap-2">
                   {available.map((_, i) => (
                     <button
                       key={i}
-                      type="button"
                       onClick={() => {
                         setBackIndex(i);
                         setIsFading(true);
@@ -160,24 +157,19 @@ export default function Hero() {
                         fadeTimeoutRef.current = window.setTimeout(() => {
                           setFrontIndex(i);
                           setIsFading(false);
-                        }, 900);
+                        }, 800);
                       }}
-                      className={`h-2.5 rounded-full transition-all ${i === frontIndex
-                          ? "w-8 bg-white/85"
-                          : "w-2.5 bg-white/45 hover:bg-white/60"
+                      className={`h-2 w-2 rounded-full transition ${i === frontIndex
+                          ? "bg-white"
+                          : "bg-white/40 hover:bg-white/70"
                         }`}
-                      aria-label={`Show slide ${i + 1}`}
                     />
                   ))}
-                  <span className="ml-3 text-xs tracking-[0.22em] text-white/60">
-                    AUTO
-                  </span>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white/22 to-transparent" />
         </div>
       </div>
     </section>
