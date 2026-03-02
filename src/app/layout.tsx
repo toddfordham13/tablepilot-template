@@ -20,6 +20,12 @@ const inter = Inter({
 const SITE_NAME = "Graze Lounge";
 const SITE_URL = "https://grazelounge.com";
 
+// Provided by you
+const MAPS_URL =
+  "https://www.google.co.uk/maps/search/Graze+Lounge+Ayia+Napa/@34.9898999,33.9966158,18z/data=!3m1!4b1?entry=ttu&g_ep=EgoyMDI2MDIyNS4wIKXMDSoASAFQAw%3D%3D";
+const GEO_LAT = 34.99001;
+const GEO_LNG = 33.99777;
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   applicationName: SITE_NAME,
@@ -109,6 +115,12 @@ export default function RootLayout({
       postalCode: "5330",
       addressCountry: "CY",
     },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: GEO_LAT,
+      longitude: GEO_LNG,
+    },
+    hasMap: MAPS_URL,
     servesCuisine: "Cocktails",
     areaServed: "Ayia Napa",
     priceRange: "€€",
