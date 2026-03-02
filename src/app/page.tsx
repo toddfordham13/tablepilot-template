@@ -25,7 +25,7 @@ export default function Home() {
                 <Discover />
 
                 {/* Keep anchor for any existing links (don’t break anything) */}
-                <div id="order" />
+
 
                 {/* New: Private Hire (secondary conversion path) */}
                 <PrivateHire />

@@ -1,4 +1,13 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
 export default function Discover() {
+  const pathname = usePathname();
+
+  const findHref = pathname === "/" ? "#find" : "/#find";
+
   const items = [
     {
       title: "Gallery",
@@ -7,6 +16,7 @@ export default function Discover() {
       cta: "View Gallery",
       img: "/images/hero/hero-3.jpg",
       alt: "Graze Lounge gallery preview",
+      external: false,
     },
     {
       title: "Menu",
@@ -15,15 +25,16 @@ export default function Discover() {
       cta: "View Menu",
       img: "/images/cocktails/espresso-martini.jpg",
       alt: "Graze cocktail menu preview",
+      external: false,
     },
     {
       title: "Find Us",
       desc: "Central Ayia Napa — easy to reach, hard to leave.",
-      // Use in-page anchor to avoid a full navigation refresh on the homepage
-      href: "#find",
+      href: findHref,
       cta: "Get Directions",
       img: "/images/hero/hero-2.jpg",
       alt: "Graze Lounge location preview",
+      external: false,
     },
   ] as const;
 
@@ -38,17 +49,19 @@ export default function Discover() {
             Everything you need — in one place.
           </h2>
           <p className="mt-3 mx-auto max-w-2xl text-[#1f1f1f]/70 leading-relaxed">
-            See the vibe, browse the cocktails, then get directions and drop in tonight.
+            See the vibe, browse the cocktails, then get directions and drop in
+            tonight.
           </p>
         </div>
 
         <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
           {items.map((it) => (
-            <a
+            <Link
               key={it.title}
               href={it.href}
               className="group overflow-hidden rounded-2xl bg-white/70 ring-1 ring-[#d9d9d9]/70 shadow-[0_12px_40px_rgba(0,0,0,0.08)] hover:shadow-[0_18px_55px_rgba(0,0,0,0.12)] transition"
               aria-label={`${it.cta}: ${it.title}`}
+              prefetch={false}
             >
               <div className="relative aspect-[4/3] overflow-hidden">
                 <img
@@ -74,7 +87,7 @@ export default function Discover() {
                   →
                 </span>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
 
