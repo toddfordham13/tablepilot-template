@@ -96,6 +96,28 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
+  const localBusinessJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BarOrPub",
+    name: "Graze Lounge",
+    url: SITE_URL,
+    telephone: "+357 943 24677",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Ippokratous 5",
+      addressLocality: "Ayia Napa",
+      postalCode: "5330",
+      addressCountry: "CY",
+    },
+    servesCuisine: "Cocktails",
+    areaServed: "Ayia Napa",
+    priceRange: "€€",
+    sameAs: [
+      "https://www.instagram.com/graze_lounge/",
+      "https://www.facebook.com/profile.php?id=61588374581854",
+    ],
+  };
+
   return (
     <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
       <body className="min-h-screen">
@@ -103,6 +125,12 @@ export default function RootLayout({
 
         {/* Mobile-only sticky actions (conversion) */}
         <MobileActionBar />
+
+        {/* LocalBusiness structured data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+        />
 
         {/* GA4 Tracking */}
         {GA_ID && (
