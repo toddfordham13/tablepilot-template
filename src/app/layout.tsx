@@ -17,7 +17,7 @@ const inter = Inter({
 });
 
 const SITE_NAME = "Graze Lounge";
-const SITE_URL = "https://graze-lounge.com"; // change to real domain later
+const SITE_URL = "https://grazelounge.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
