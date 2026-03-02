@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
+import { track } from "@/lib/analytics";
 
 export default function MobileActionBar() {
   const pathname = usePathname();
@@ -43,6 +44,7 @@ export default function MobileActionBar() {
             href={directionsHref}
             className="pill flex-1 justify-center text-center"
             aria-label="Get directions to Graze Lounge"
+            onClick={() => track("directions_click", { location: "mobile_sticky", path: pathname })}
           >
             DIRECTIONS
           </Link>
@@ -51,6 +53,7 @@ export default function MobileActionBar() {
             href={privateHireHref}
             className="pill pill-primary flex-1 justify-center text-center"
             aria-label="Private hire enquiry"
+            onClick={() => track("private_hire_click", { location: "mobile_sticky", path: pathname })}
           >
             PRIVATE HIRE
           </Link>
