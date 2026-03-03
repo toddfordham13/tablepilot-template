@@ -1,3 +1,7 @@
+// src/components/sections/FindContact.tsx
+
+"use client";
+
 const ADDRESS_LINE = "5 Ippokratous St, 5330 Ayia Napa, Cyprus";
 const OPENING_HOURS = "Mon–Sun  |  4:00 PM — Late";
 const PHONE = "+357 943 24677";
@@ -53,7 +57,21 @@ function telLink(phone: string) {
   return `tel:${cleaned}`;
 }
 
+function trackEvent(name: string, params?: Record<string, any>) {
+  if (typeof window === "undefined") return;
+  const gtag = (window as any).gtag as undefined | ((...args: any[]) => void);
+  if (!gtag) return;
+
+  gtag("event", name, {
+    event_category: "engagement",
+    ...params,
+  });
+}
+
 export default function FindContact() {
+  const googleHref = mapsDirectionsUrl();
+  const appleHref = appleMapsDirectionsUrl();
+
   return (
     <section id="find" className="marble-soft">
       <div className="container-shell py-14">
@@ -68,7 +86,7 @@ export default function FindContact() {
               <iframe
                 title="Graze Lounge map"
                 src={mapEmbedUrl()}
-                className="h-[220px] sm:h-[260px] w-full"
+                className="h-[220px] w-full sm:h-[260px]"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 allowFullScreen
@@ -81,10 +99,16 @@ export default function FindContact() {
 
             <div className="mt-5 flex flex-wrap gap-3">
               <a
-                href={mapsDirectionsUrl()}
+                href={googleHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="pill inline-flex items-center gap-2 hover:text-[var(--gold)] transition"
+                onClick={() =>
+                  trackEvent("directions_click", {
+                    event_label: "Google Maps",
+                    link_url: googleHref,
+                  })
+                }
+                className="pill inline-flex items-center gap-2 transition hover:text-[var(--gold)]"
                 aria-label="Open directions to Graze Lounge in Google Maps"
               >
                 <span>Google Maps</span>
@@ -92,10 +116,16 @@ export default function FindContact() {
               </a>
 
               <a
-                href={appleMapsDirectionsUrl()}
+                href={appleHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="pill inline-flex items-center gap-2 hover:text-[var(--gold)] transition"
+                onClick={() =>
+                  trackEvent("directions_click", {
+                    event_label: "Apple Maps",
+                    link_url: appleHref,
+                  })
+                }
+                className="pill inline-flex items-center gap-2 transition hover:text-[var(--gold)]"
                 aria-label="Open directions to Graze Lounge in Apple Maps"
               >
                 <span>Apple Maps</span>
@@ -114,7 +144,7 @@ export default function FindContact() {
           </div>
 
           {/* Divider */}
-          <div className="hidden md:block w-px bg-black/10" />
+          <div className="hidden w-px bg-black/10 md:block" />
 
           {/* CONTACT */}
           <div id="contact">
@@ -123,12 +153,17 @@ export default function FindContact() {
             <div className="mt-3 h-px w-full bg-black/10" />
 
             <div className="b-font mt-6 text-[15px] text-charcoal/70">
-              <div className="text-[16px] text-charcoal/80 font-medium">
+              <div className="text-[16px] font-medium text-charcoal/80">
                 Graze Lounge
               </div>
 
               <a
                 href={telLink(PHONE)}
+                onClick={() =>
+                  trackEvent("phone_click", {
+                    event_label: PHONE,
+                  })
+                }
                 className="mt-2 inline-block text-[15px] font-medium transition-colors hover:text-[var(--gold)]"
                 aria-label={`Call Graze Lounge on ${PHONE}`}
               >
@@ -142,7 +177,13 @@ export default function FindContact() {
                 href={INSTAGRAM_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="pill flex items-center gap-2 hover:text-[var(--gold)] transition"
+                onClick={() =>
+                  trackEvent("social_click", {
+                    event_label: "Instagram",
+                    link_url: INSTAGRAM_URL,
+                  })
+                }
+                className="pill flex items-center gap-2 transition hover:text-[var(--gold)]"
                 aria-label="Open Graze Lounge Instagram"
               >
                 <svg
@@ -161,7 +202,13 @@ export default function FindContact() {
                 href={FACEBOOK_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="pill flex items-center gap-2 hover:text-[var(--gold)] transition"
+                onClick={() =>
+                  trackEvent("social_click", {
+                    event_label: "Facebook",
+                    link_url: FACEBOOK_URL,
+                  })
+                }
+                className="pill flex items-center gap-2 transition hover:text-[var(--gold)]"
                 aria-label="Open Graze Lounge Facebook"
               >
                 <svg
