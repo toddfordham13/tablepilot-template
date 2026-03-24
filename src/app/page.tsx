@@ -51,10 +51,13 @@ export default function HomePage() {
                     className="bodega-landing-title uppercase text-[#f5f3ee]"
                     style={{
                       fontWeight: 900,
-                      fontSize: "clamp(2.55rem, 10.5vw, 7rem)",
+                      fontSize: "clamp(2.3rem, 8.7vw, 6rem)",
                       lineHeight: 0.9,
                       letterSpacing: "-0.04em",
                       textShadow: "0 10px 30px rgba(0,0,0,0.62)",
+                      display: "inline-block",
+                      maxWidth: "10.2ch",
+                      paddingRight: "0.08em",
                     }}
                   >
                     BIG
@@ -240,8 +243,9 @@ export default function HomePage() {
 
           @media (min-width: 768px) and (max-width: 1024px) {
             .bodega-landing-title {
-              font-size: clamp(2.15rem, 5.8vw, 4rem) !important;
+              font-size: clamp(2.05rem, 5.4vw, 3.75rem) !important;
               line-height: 0.92 !important;
+              max-width: 10.4ch !important;
             }
 
             .fuego-landing-title {
