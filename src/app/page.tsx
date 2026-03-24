@@ -48,7 +48,7 @@ export default function HomePage() {
 
                 <div className="relative z-10 flex min-h-[34vh] flex-col justify-end rounded-[26px] p-5 sm:min-h-[38vh] sm:p-8 md:p-10">
                   <p
-                    className="bodega-landing-title uppercase text-[#f5f3ee]"
+                    className="bodega-landing-title whitespace-nowrap uppercase text-[#f5f3ee]"
                     style={{
                       fontWeight: 900,
                       fontSize: "clamp(2.55rem, 10.5vw, 7rem)",
