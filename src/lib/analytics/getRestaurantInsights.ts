@@ -1,250 +1,209 @@
-type InsightInput = {
-  visits: number
-  menuViews: number
-  bookingClicks: number
-  phoneClicks: number
-  directionsClicks: number
-
-  bookingIntentRate: number
-  menuInterestRate: number
-  menuToBookingRate: number
-  contactActionRate: number
-  healthScore: number
-
-  galleryViews?: number
-  contactSectionViews?: number
-  galleryEngagementRate?: number
-  contactSectionReachRate?: number
-  avgScrollDepth?: number
-  maxScrollDepth?: number
-  menuCategoryClicks?: number
-}
-
 export type RestaurantInsight = {
   title: string
   body: string
-  tone: "good" | "neutral" | "warning"
+  tone?: "good" | "warning" | "neutral"
 }
 
 export type RestaurantAction = {
   title: string
   body: string
+  priority?: "high" | "medium" | "low"
 }
 
-export type RestaurantInsightsResult = {
-  insights: RestaurantInsight[]
-  actions: RestaurantAction[]
+type GetRestaurantInsightsInput = {
+  visits: number
+  menuViews: number
+  bookingClicks: number
+  phoneClicks: number
+  directionsClicks: number
+  contactActions: number
+
+  bookingIntentRate: number
+  menuInterestRate: number
+  menuToBookingRate: number
+  contactActionRate: number
+
+  galleryViews: number
+  contactSectionViews: number
+  galleryEngagementRate: number
+  contactSectionReachRate: number
+
+  avgScrollDepth: number
+  maxScrollDepth: number
+  menuCategoryClicks: number
+
+  healthScore?: number
 }
 
 export function getRestaurantInsights(
-  input: InsightInput
-): RestaurantInsightsResult {
+  input: GetRestaurantInsightsInput
+): {
+  insights: RestaurantInsight[]
+  actions: RestaurantAction[]
+} {
   const insights: RestaurantInsight[] = []
   const actions: RestaurantAction[] = []
 
-  const indirectActions = input.phoneClicks + input.directionsClicks
-  const hasLowData = input.visits < 25
+  const {
+    visits,
+    menuViews,
+    bookingClicks,
+    phoneClicks,
+    directionsClicks,
+    contactActions,
+    menuInterestRate,
+    bookingIntentRate,
+    menuToBookingRate,
+    contactActionRate,
+    galleryViews,
+    galleryEngagementRate,
+    contactSectionReachRate,
+    avgScrollDepth,
+    menuCategoryClicks,
+  } = input
 
-  const galleryViews = input.galleryViews ?? 0
-  const contactSectionViews = input.contactSectionViews ?? 0
-  const galleryEngagementRate = input.galleryEngagementRate ?? 0
-  const contactSectionReachRate = input.contactSectionReachRate ?? 0
-  const avgScrollDepth = input.avgScrollDepth ?? 0
-  const maxScrollDepth = input.maxScrollDepth ?? 0
-  const menuCategoryClicks = input.menuCategoryClicks ?? 0
-
-  if (hasLowData) {
+  if (visits < 25) {
     insights.push({
-      title: "Low data volume",
-      body: "Traffic is still low, so current trends are directional rather than fully reliable.",
+      title: "Early traffic signals are building",
+      body: "The site is starting to attract visitors. As more guests land on the site, TablePilot will build a clearer picture of what drives menu views and bookings.",
       tone: "neutral",
     })
 
     actions.push({
-      title: "Increase traffic volume",
-      body: "Drive more visits before making major conversion decisions so the KPI picture becomes more reliable.",
+      title: "Drive more traffic",
+      body: "Share the website link on Instagram or Google so more guests begin discovering the menu and booking pages.",
+      priority: "high",
     })
   }
 
-  if (input.menuViews === 0 && input.visits > 0) {
+  if (menuInterestRate < 20) {
     insights.push({
-      title: "Menu discovery is weak",
-      body: "Visitors are landing on the site, but menu engagement is not showing up. The menu CTA may need stronger placement.",
+      title: "Menu discovery could increase",
+      body: "Some visitors are discovering the menu, with room to guide more guests there earlier in the journey.",
       tone: "warning",
     })
 
     actions.push({
-      title: "Strengthen menu CTA visibility",
-      body: "Move the menu call-to-action higher on the page and make it more visually prominent.",
+      title: "Highlight the menu on social",
+      body: "Post a signature dish or best-seller and link directly to the menu page.",
+      priority: "high",
+    })
+  } else if (menuInterestRate >= 40) {
+    insights.push({
+      title: "Guests are exploring the menu well",
+      body: "A strong portion of visitors are reaching the menu, which is a positive signal of food interest.",
+      tone: "good",
     })
   }
 
-  if (input.menuInterestRate > 0 && input.menuInterestRate < 15) {
+  if (bookingIntentRate < 2) {
     insights.push({
-      title: "Menu reach is low",
-      body: "A small share of visitors are reaching the menu. Guests may not be discovering food content quickly enough.",
+      title: "Bookings could be encouraged more",
+      body: "Visitors are exploring the site but only a small portion are moving toward reservations.",
       tone: "warning",
     })
 
     actions.push({
-      title: "Pull menu content higher",
-      body: "Move menu previews or menu calls-to-action closer to the hero so more visitors enter the menu journey.",
+      title: "Promote reservations",
+      body: "Run a post or story encouraging guests to book tables for upcoming evenings or weekends.",
+      priority: "high",
+    })
+  } else if (bookingIntentRate >= 5) {
+    insights.push({
+      title: "Booking intent is strong",
+      body: "Visitors are progressing from browsing into booking at a healthy rate.",
+      tone: "good",
     })
   }
 
-  if (input.menuInterestRate >= 30 && input.bookingIntentRate < 5) {
+  if (menuViews > 0 && menuToBookingRate >= 12) {
     insights.push({
-      title: "Interest is not converting strongly",
-      body: "Guests are engaging with the menu, but booking intent is relatively low. The booking path or CTA may need to be clearer.",
-      tone: "warning",
-    })
-
-    actions.push({
-      title: "Improve booking path from menu",
-      body: "Place stronger booking prompts near menu content and reduce friction between menu browsing and booking.",
+      title: "Menu views are converting well",
+      body: "Guests who reach the menu are progressing into bookings at a strong rate.",
+      tone: "good",
     })
   }
 
-  if (input.menuInterestRate >= 30 && input.menuToBookingRate < 10) {
+  if (contactActionRate >= 3) {
     insights.push({
-      title: "Menu engagement is strong but booking follow-through is weak",
-      body: "Guests are clearly exploring the menu, but relatively few are progressing from menu interest into booking action.",
-      tone: "warning",
-    })
-
-    actions.push({
-      title: "Add booking prompts inside menu journey",
-      body: "Introduce clearer booking prompts around high-interest menu sections to capture intent earlier.",
+      title: "Guests are taking direct action",
+      body: "Visitors are calling, booking or requesting directions, showing strong real-world engagement.",
+      tone: "good",
     })
   }
 
-  if (
-    input.contactActionRate >= 10 &&
-    input.bookingIntentRate < 4 &&
-    indirectActions > input.bookingClicks
-  ) {
+  if (galleryViews > 0 && galleryEngagementRate >= 15) {
     insights.push({
-      title: "Contact is outperforming bookings",
-      body: "Guests are calling or checking directions more often than booking directly. This can indicate booking friction or a preference for offline conversion.",
+      title: "Visual content is working",
+      body: "Guests are engaging with imagery across the site, helping build interest in the food and venue.",
+      tone: "good",
+    })
+  }
+
+  if (contactSectionReachRate < 15 && visits > 20) {
+    insights.push({
+      title: "Contact sections could be reached earlier",
+      body: "Moving booking prompts slightly higher could help more guests reach them.",
       tone: "neutral",
     })
-
-    actions.push({
-      title: "Review direct booking visibility",
-      body: "Test stronger direct-booking placement so guests do not default to phone or directions before booking.",
-    })
   }
 
-  if (contactSectionViews > 0 && contactSectionReachRate < 20 && input.visits >= 10) {
+  if (avgScrollDepth >= 55) {
     insights.push({
-      title: "Too few guests reach the contact section",
-      body: "The lower page journey may not be getting enough visibility. Contact information could be too far down the page for many visitors.",
-      tone: "warning",
-    })
-
-    actions.push({
-      title: "Expose contact actions earlier",
-      body: "Repeat booking, phone or directions CTAs higher up the page so guests can act earlier.",
-    })
-  }
-
-  if (avgScrollDepth > 0 && avgScrollDepth < 40 && input.visits >= 10) {
-    insights.push({
-      title: "Scroll depth is shallow",
-      body: "Guests are not progressing far down the page on average, which can suppress menu and contact discovery.",
-      tone: "warning",
-    })
-
-    actions.push({
-      title: "Improve above-the-fold clarity",
-      body: "Tighten hero messaging and bring the strongest CTA and proof points higher so users continue deeper.",
-    })
-  }
-
-  if (galleryViews > 0 && galleryEngagementRate >= 20) {
-    insights.push({
-      title: "Visual engagement is strong",
-      body: "Guests are engaging with gallery content at a healthy rate, which suggests the visual presentation is supporting interest.",
+      title: "Guests are exploring deeper",
+      body: "Visitors are scrolling well through the page, which means they are actively browsing content.",
       tone: "good",
     })
   }
 
-  if (galleryViews === 0 && input.visits >= 10) {
+  if (menuCategoryClicks >= 8) {
     insights.push({
-      title: "Gallery engagement is missing",
-      body: "Visitors are not reaching or engaging with visual content, which may reduce trust and atmosphere-building.",
+      title: "Menu interaction is strong",
+      body: "Guests are actively exploring menu categories, which indicates strong food interest.",
+      tone: "good",
+    })
+  }
+
+  if (insights.length === 0) {
+    insights.push({
+      title: "Guest activity is building",
+      body: "The site is collecting useful visitor signals. Continued promotion will strengthen insights.",
       tone: "neutral",
     })
+  }
 
+  if (actions.length === 0) {
     actions.push({
-      title: "Improve visual discovery",
-      body: "Pull photography closer to the top of the page or cross-link visual content from stronger sections.",
+      title: "Maintain visibility",
+      body: "Continue sharing food photos, menu items, and booking links on social channels.",
+      priority: "medium",
     })
   }
-
-  if (menuCategoryClicks >= 3) {
-    insights.push({
-      title: "Guests are interacting with menu items",
-      body: "Preview menu cards are attracting direct interaction, which is a good signal of active food interest.",
-      tone: "good",
-    })
-  }
-
-  if (input.bookingIntentRate >= 8) {
-    insights.push({
-      title: "Booking intent is healthy",
-      body: "The site is doing a solid job of turning visits into booking actions.",
-      tone: "good",
-    })
-  }
-
-  if (input.contactActionRate >= 12) {
-    insights.push({
-      title: "Guests are taking action",
-      body: "Phone, directions and booking interactions show strong practical guest intent.",
-      tone: "good",
-    })
-  }
-
-  if (maxScrollDepth >= 75) {
-    insights.push({
-      title: "Some guests are reaching deep page content",
-      body: "A meaningful share of users are exploring further down the journey, which is a positive sign for long-form conversion pages.",
-      tone: "good",
-    })
-  }
-
-  if (input.healthScore >= 85) {
-    insights.push({
-      title: "Overall performance is excellent",
-      body: "The site is showing strong guest engagement and high-value action signals across the funnel.",
-      tone: "good",
-    })
-  } else if (input.healthScore < 50) {
-    insights.push({
-      title: "Performance needs attention",
-      body: "The current mix of interest and action signals suggests the site is not yet converting strongly enough.",
-      tone: "warning",
-    })
-
-    actions.push({
-      title: "Focus on conversion basics first",
-      body: "Prioritise stronger booking CTAs, clearer menu access and more visible trust signals before adding complexity.",
-    })
-  }
-
-  const uniqueInsights = insights.filter(
-    (insight, index, self) =>
-      index === self.findIndex((item) => item.title === insight.title)
-  )
-
-  const uniqueActions = actions.filter(
-    (action, index, self) =>
-      index === self.findIndex((item) => item.title === action.title)
-  )
 
   return {
-    insights: uniqueInsights.slice(0, 6),
-    actions: uniqueActions.slice(0, 4),
+    insights: dedupeInsights(insights).slice(0, 6),
+    actions: dedupeActions(actions).slice(0, 3),
   }
+}
+
+function dedupeInsights(items: RestaurantInsight[]) {
+  const seen = new Set<string>()
+
+  return items.filter((item) => {
+    const key = `${item.title}::${item.body}`
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
+}
+
+function dedupeActions(items: RestaurantAction[]) {
+  const seen = new Set<string>()
+
+  return items.filter((item) => {
+    const key = `${item.title}::${item.body}`
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
 }

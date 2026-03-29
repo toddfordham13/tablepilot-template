@@ -1,15 +1,41 @@
 import Link from "next/link"
+import { unstable_noStore as noStore } from "next/cache"
+
+import { getOpeningHoursByRestaurantSlug } from "@/lib/db/hours"
+
+type OpeningTimeRow = {
+  day: string
+  hours: string
+}
+
+function getFuegoOpeningTimes(): OpeningTimeRow[] {
+  noStore()
+
+  const overrides = getOpeningHoursByRestaurantSlug("fuego")
+
+  if (!overrides.length) {
+    return [
+      { day: "Monday", hours: "17:00–21:00" },
+      { day: "Tuesday", hours: "Closed" },
+      { day: "Wednesday", hours: "Closed" },
+      { day: "Thursday", hours: "17:00–21:00" },
+      { day: "Friday", hours: "17:00–21:00" },
+      { day: "Saturday", hours: "12:00–21:00" },
+      { day: "Sunday", hours: "12:00–18:00" },
+    ]
+  }
+
+  return overrides.map((item) => ({
+    day: item.label,
+    hours:
+      item.is_closed === 1
+        ? "Closed"
+        : `${item.open_time ?? ""}–${item.close_time ?? ""}`,
+  }))
+}
 
 export default function FuegoLocation() {
-  const openingTimes = [
-    { day: "Monday", hours: "17:00–21:00" },
-    { day: "Tuesday", hours: "Closed" },
-    { day: "Wednesday", hours: "Closed" },
-    { day: "Thursday", hours: "17:00–21:00" },
-    { day: "Friday", hours: "17:00–21:00" },
-    { day: "Saturday", hours: "12:00–21:00" },
-    { day: "Sunday", hours: "12:00–18:00" },
-  ]
+  const openingTimes = getFuegoOpeningTimes()
 
   return (
     <section

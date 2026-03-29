@@ -1,0 +1,15 @@
+import { unstable_noStore as noStore } from "next/cache"
+
+import { menu as fallbackMenu } from "@/content/restaurants/fuego/menu"
+import FuegoSignatureTacosClient from "@/components/fuego/FuegoSignatureTacosClient"
+import { getEffectiveMenuForConcept } from "@/lib/menus/menuStore"
+import type { MenuContent } from "@/lib/menus/types"
+
+export default function FuegoSignatureTacos() {
+  noStore()
+
+  const effectiveMenu =
+    (getEffectiveMenuForConcept("fuego") as MenuContent | null) ?? fallbackMenu
+
+  return <FuegoSignatureTacosClient menuContent={effectiveMenu} />
+}

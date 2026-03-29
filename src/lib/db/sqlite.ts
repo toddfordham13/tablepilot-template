@@ -29,6 +29,11 @@ ON analytics_events (concept, created_at);
 
 CREATE INDEX IF NOT EXISTS idx_concept_event_created
 ON analytics_events (concept, event_type, created_at);
+
+CREATE TABLE IF NOT EXISTS gallery_overrides (
+  concept TEXT PRIMARY KEY,
+  data TEXT NOT NULL
+);
 `)
 
 export default db

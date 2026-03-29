@@ -1,9 +1,12 @@
+import { redirect } from "next/navigation"
+
 import KpiDashboard from "@/components/kpi/KpiDashboard"
 import { getConceptAnalytics } from "@/lib/analytics/getConceptAnalytics"
 import { getConceptKpis } from "@/lib/analytics/getConceptKpis"
 import { getRestaurantHealthScore } from "@/lib/analytics/getRestaurantHealthScore"
 import { getRestaurantInsights } from "@/lib/analytics/getRestaurantInsights"
 import { getTrendComparison } from "@/lib/analytics/getTrendComparison"
+import { getCurrentUser } from "@/lib/auth/getCurrentUser"
 import type { AnalyticsEventPayload } from "@/lib/tracking/types"
 
 type EventsApiResponse = {
@@ -85,16 +88,19 @@ async function getPreviousEvents(
   return getEventsForWindow(concept, start, end)
 }
 
-export default async function ConceptKpiPage({
-  params,
+export default async function DashboardPage({
   searchParams,
 }: {
-  params: Promise<{ concept: string }>
   searchParams: Promise<{ range?: string }>
 }) {
-  const { concept } = await params
-  const resolvedSearchParams = await searchParams
+  const user = await getCurrentUser()
 
+  if (!user) {
+    redirect("/dashboard/login")
+  }
+
+  const resolvedSearchParams = await searchParams
+  const concept = user.restaurantSlug
   const requestedRange = resolvedSearchParams?.range
 
   const range: RangeKey =
@@ -102,7 +108,7 @@ export default async function ConceptKpiPage({
       requestedRange === "7d" ||
       requestedRange === "30d"
       ? requestedRange
-      : "7d"
+      : "30d"
 
   const [events, previousEvents] = await Promise.all([
     getEvents(concept, range),
@@ -129,13 +135,11 @@ export default async function ConceptKpiPage({
     phoneClicks: summary.phoneClicks,
     directionsClicks: summary.directionsClicks,
     contactActions: summary.contactActions,
-
     bookingIntentRate: kpis.bookingIntentRate,
     menuInterestRate: kpis.menuInterestRate,
     menuToBookingRate: kpis.menuToBookingRate,
     contactActionRate: kpis.contactActionRate,
     healthScore: health.score,
-
     galleryViews: summary.galleryViews,
     contactSectionViews: summary.contactSectionViews,
     galleryEngagementRate: kpis.galleryEngagementRate,

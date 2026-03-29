@@ -1,10 +1,13 @@
 import Image from "next/image"
+import { unstable_noStore as noStore } from "next/cache"
+
+import { getOpeningHoursByRestaurantSlug } from "@/lib/db/hours"
 
 type BodegaLocationProps = {
   mapUrl?: string
 }
 
-const openingHours = [
+const fallbackOpeningHours = [
   { day: "Monday", hours: "11:00 – 15:30" },
   { day: "Tuesday", hours: "11:00 – 15:30" },
   { day: "Wednesday", hours: "11:00 – 15:30" },
@@ -14,9 +17,29 @@ const openingHours = [
   { day: "Sunday", hours: "12:00 – 16:00" },
 ]
 
+function getOpeningHours() {
+  noStore()
+
+  const overrides = getOpeningHoursByRestaurantSlug("bodega")
+
+  if (!overrides.length) {
+    return fallbackOpeningHours
+  }
+
+  return overrides.map((item) => ({
+    day: item.label,
+    hours:
+      item.is_closed === 1
+        ? "Closed"
+        : `${item.open_time ?? ""} – ${item.close_time ?? ""}`,
+  }))
+}
+
 export default function BodegaLocation({
   mapUrl = "https://maps.google.com/?q=Norwich%20Market",
 }: BodegaLocationProps) {
+  const openingHours = getOpeningHours()
+
   return (
     <section
       id="find"
@@ -28,7 +51,6 @@ export default function BodegaLocation({
     >
       <div className="mx-auto max-w-7xl px-6 py-8 md:px-8 md:py-10">
         <div className="grid gap-0 border shadow-[0_18px_40px_rgba(0,0,0,0.22)] lg:grid-cols-2">
-          {/* OPENING HOURS */}
           <div
             className="border-b p-6 md:p-7 lg:border-b-0 lg:border-r"
             style={{
@@ -88,7 +110,6 @@ export default function BodegaLocation({
             </div>
           </div>
 
-          {/* MAP */}
           <div
             className="p-6 md:p-7"
             style={{
@@ -137,7 +158,6 @@ export default function BodegaLocation({
           </div>
         </div>
 
-        {/* FUEGO PANEL */}
         <div
           className="relative mt-6 overflow-hidden border shadow-[0_18px_40px_rgba(0,0,0,0.22)]"
           style={{
