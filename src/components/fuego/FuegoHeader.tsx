@@ -68,8 +68,8 @@ export default function FuegoHeader() {
               Instagram
             </a>
 
-            <a
-              href="#find"
+            <Link
+              href="/fuego/reserve"
               className="inline-flex min-h-[48px] items-center justify-center rounded-full px-5 text-sm font-bold uppercase tracking-[0.12em] transition duration-200 hover:-translate-y-0.5"
               style={{
                 backgroundColor: "#F3E7D7",
@@ -77,7 +77,7 @@ export default function FuegoHeader() {
               }}
             >
               Book Table
-            </a>
+            </Link>
           </nav>
         </div>
       </header>

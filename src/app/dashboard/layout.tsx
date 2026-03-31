@@ -42,6 +42,12 @@ export default async function DashboardLayout({
             <Link href="/dashboard/gallery" className="block hover:text-[#C9A24A]">
               Gallery
             </Link>
+            <Link
+              href="/dashboard/bookings"
+              className="block hover:text-[#C9A24A]"
+            >
+              Bookings
+            </Link>
             <Link href="/dashboard/settings" className="block hover:text-[#C9A24A]">
               Settings
             </Link>
